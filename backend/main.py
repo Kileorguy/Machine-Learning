@@ -33,7 +33,7 @@ def camera_max():
     return 1
 
 
-with open('./models/best_svm_model.pkl', 'rb') as file:
+with open('./models/model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 cam_max = camera_max()
@@ -94,8 +94,8 @@ def sign_frame():  # generate frame by frame from camera
                                 relative_x = landmark.x - hand_landmarks.landmark[0].x
                                 relative_y = landmark.y - hand_landmarks.landmark[0].y
                                 # print(type(idx1), type(relative_x),type(relative_y))
-                                hand_data[f"Landmark_{idx1 + 1}_X"] = [relative_x]
-                                hand_data[f"Landmark_{idx1 + 1}_Y"] = [relative_y]
+                                hand_data[f"Point{idx1 + 1}_X"] = [relative_x]
+                                hand_data[f"Point{idx1 + 1}_Y"] = [relative_y]
                             # roi_preprocessed = preProcess(roi)
                             # roi_preprocessed = np.expand_dims(roi_preprocessed, axis=0)
 
