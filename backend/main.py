@@ -1,11 +1,18 @@
+
+
 # from tensorflow.keras.models import load_model
+model_path = 'backend\models\hand_landmarker.task'
+import os
+
+os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
+import random
 from flask_cors import CORS
 import numpy as np
 from flask import Flask, request, jsonify, render_template, Response
 import pickle
 from PIL import Image
 import io
-import tensorflow as tf
+# import tensorflow as tf
 import cv2
 import matplotlib.pyplot as plt
 import pandas as pd
@@ -13,8 +20,6 @@ import pandas as pd
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
-
-model_path = 'backend\models\hand_landmarker.task'
 
 # alexnet = load_model('./models/alexnet.h5')
 
@@ -26,18 +31,27 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 app = Flask(__name__)
 CORS(app)
 
-classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S','Space', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
-
+classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S','space', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 def camera_max():
-    return 1
+    return 0
 
+print(__name__)
+try:
+    with open('./models/model.pkl', 'rb') as file:
+        model = pickle.load(file)
+except Exception as e:
+    print(f'error : {e}')
 
-with open('./models/model.pkl', 'rb') as file:
-    model = pickle.load(file)
+print('done load model')
 
 cam_max = camera_max()
-cap = cv2.VideoCapture(cam_max, cv2.CAP_DSHOW)
+# cap = cv2.VideoCapture(cam_max, cv2.CAP_DSHOW)
+cap = cv2.VideoCapture(cam_max)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH , 320)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT , 240)
+
+answer = random.randint(0, len(classes))
 
 def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
@@ -47,12 +61,16 @@ def mediapipe_detection(image, model):
 
 def sign_frame():  # generate frame by frame from camera
     global easy, cap
+    answer = random.randint(0,len(classes)-1)
+    # print(classes[answer])
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
     with mp_hands.Hands(min_detection_confidence=0.6, min_tracking_confidence=0.6, max_num_hands=1) as hands:
         while True:
             success, frame = cap.read() 
+
             if success:
+                cv2.putText(frame,f'{classes[answer]}',(100,100), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,255),2)
                 try:
                     height, width, _ = frame.shape
                     if height > width:
@@ -105,7 +123,6 @@ def sign_frame():  # generate frame by frame from camera
                             # plt.close()
                             # relative_x = landmark.x - hand_landmarks.landmark[0].x
                             # relative_y = landmark.y - hand_landmarks.landmark[0].y
-
                             target_size = (224, 224)
                             # print(roi_preprocessed)
                             # prediction = alexnet.predict(roi_preprocessed)
@@ -114,6 +131,9 @@ def sign_frame():  # generate frame by frame from camera
                             # print(prediction)
                             # predicted_class = np.argmax(prediction)
                             cv2.putText(frame, f'Class: {prediction[0]}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                            if prediction[0] == classes[answer]:
+                                answer = random.randint(0,len(classes)-1)
+                                cv2.putText(frame,f'{classes[answer]}',(100,100), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,255),2)
 
                     ret, buffer = cv2.imencode('.jpg', frame)
                     frame_bytes = buffer.tobytes()
@@ -121,7 +141,7 @@ def sign_frame():  # generate frame by frame from camera
                     yield (b'--frame\r\n'
                            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
                 except Exception as e:
-                    print(e)
+                    print(f'error : {e}')
                     pass
 
 @app.route('/video_feed')
