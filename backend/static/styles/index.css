@@ -16,6 +16,9 @@ nav{
 h1{
     margin: 0;
 }
+#guideBtn{
+    margin-top: 30px;
+}
 
 .mainContent{
     margin-top: 40px;

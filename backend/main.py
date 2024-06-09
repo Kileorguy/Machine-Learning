@@ -13,6 +13,7 @@ import pandas as pd
 import mediapipe as mp
 from mediapipe.tasks import python
 from mediapipe.tasks.python import vision
+import random
 
 model_path = 'backend\models\hand_landmarker.task'
 
@@ -26,7 +27,7 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 app = Flask(__name__)
 CORS(app)
 
-classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S','Space', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
+classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S','space', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
 
 def camera_max():
@@ -121,10 +122,20 @@ def sign_frame():  # generate frame by frame from camera
                             # print(prediction)
                             # predicted_class = np.argmax(prediction)
                             cv2.putText(frame, f'Class: {prediction[0]}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+
+                            print(classes[answer])
+                            print(classes[answer])
+                            print(classes[answer])
+                            print(classes[answer])
+                            print(classes[answer])
+                            print(classes[answer])
+                            print(classes[answer])
+                            print(classes[answer])
                             if prediction[0] == classes[answer]:
                                 answer = random.randint(0,len(classes)-1)
-                                cv2.putText(frame,f'{classes[answer]}',(100,100), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,255),2)
 
+#                                 cv2.putText(frame,f'{classes[answer]}',(100,100), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,255),2)
+                    cv2.putText(frame, f'Try {classes[answer]}!', (15,30), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
                     ret, buffer = cv2.imencode('.jpg', frame)
                     frame_bytes = buffer.tobytes()
                     
@@ -144,6 +155,7 @@ def hello():
     width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
     height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
     return render_template('index.html', width=width, height=height)
+
 
 
 if __name__ == '__main__':
