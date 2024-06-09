@@ -27,6 +27,8 @@ VisionRunningMode = mp.tasks.vision.RunningMode
 
 app = Flask(__name__)
 CORS(app)
+app.config['TEMPLATES_AUTO_RELOAD'] = True
+app.config['SEND_FILE_MAX_AGE_DEFAULT'] = 0
 
 classes = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S','space', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z']
 
@@ -124,14 +126,14 @@ def sign_frame():  # generate frame by frame from camera
                             # predicted_class = np.argmax(prediction)
                             cv2.putText(frame, f'Class: {prediction[0]}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
 
-                            print(classes[answer])
-                            print(classes[answer])
-                            print(classes[answer])
-                            print(classes[answer])
-                            print(classes[answer])
-                            print(classes[answer])
-                            print(classes[answer])
-                            print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
+                            # print(classes[answer])
                             if prediction[0] == classes[answer]:
                                 answer = random.randint(0,len(classes)-1)
 

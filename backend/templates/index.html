@@ -6,7 +6,7 @@
     <title>Page Title</title>
     <meta name='viewport' content='width=device-width, initial-scale=1'>
     <link rel='stylesheet' type='text/css' media='screen' href="{{ url_for('static',filename='styles/index.css') }}">
-    <script src='main.js'></script>
+    <script src="{{ url_for('static', filename='./scripts/guide.js') }}" defer></script>
 </head>
 <body style="margin: 0; padding: 0;">
 
@@ -27,6 +27,14 @@
         modal2.style.display='none'
         backgroundModal2.style.display = 'none'
         ">
+        <div style="display: flex; align-items: center; justify-content: center; height: 80%; margin-top: 2%;">
+            <button id = "prevBtn">Prev</button>
+            <div id="guideContainer" style="display: flex; flex-wrap: wrap; justify-content: space-around; margin : 2%; row-gap: 2%; width: 60%; height: 100%;">
+                
+            </div>
+            <button id="nextBtn">Next</button>
+        </div>
+
     </div>
     <nav>
         <div>
