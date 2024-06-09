@@ -37,7 +37,9 @@ with open('./models/model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 cam_max = camera_max()
+
 cap = cv2.VideoCapture(cam_max, cv2.CAP_DSHOW)
+
 
 def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
@@ -45,7 +47,7 @@ def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     return image, results
 
-def sign_frame():  # generate frame by frame from camera
+def sign_frame():
     global easy, cap
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
@@ -131,7 +133,10 @@ def video_feed():
 
 @app.route('/')
 def hello():
-    return render_template('index.html', person="Hendi")
+    width = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))
+    height = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))
+    return render_template('index.html', width=width, height=height)
+
 
 if __name__ == '__main__':
     print("run")
