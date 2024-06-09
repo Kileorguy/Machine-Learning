@@ -37,8 +37,12 @@ with open('./models/model.pkl', 'rb') as file:
     model = pickle.load(file)
 
 cam_max = camera_max()
-
 cap = cv2.VideoCapture(cam_max, cv2.CAP_DSHOW)
+# cap = cv2.VideoCapture(cam_max)
+# cap.set(cv2.CAP_PROP_FRAME_WIDTH , 320)
+# cap.set(cv2.CAP_PROP_FRAME_HEIGHT , 240)
+
+answer = random.randint(0, len(classes))
 
 
 def mediapipe_detection(image, model):
@@ -47,8 +51,10 @@ def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     return image, results
 
-def sign_frame():
+def sign_frame():  # generate frame by frame from camera
     global easy, cap
+    answer = random.randint(0,len(classes)-1)
+    # print(classes[answer])
     mp_hands = mp.solutions.hands
     mp_drawing = mp.solutions.drawing_utils
     with mp_hands.Hands(min_detection_confidence=0.6, min_tracking_confidence=0.6, max_num_hands=1) as hands:
@@ -107,7 +113,6 @@ def sign_frame():
                             # plt.close()
                             # relative_x = landmark.x - hand_landmarks.landmark[0].x
                             # relative_y = landmark.y - hand_landmarks.landmark[0].y
-
                             target_size = (224, 224)
                             # print(roi_preprocessed)
                             # prediction = alexnet.predict(roi_preprocessed)
@@ -116,6 +121,9 @@ def sign_frame():
                             # print(prediction)
                             # predicted_class = np.argmax(prediction)
                             cv2.putText(frame, f'Class: {prediction[0]}', (x_min, y_min - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 255, 0), 2)
+                            if prediction[0] == classes[answer]:
+                                answer = random.randint(0,len(classes)-1)
+                                cv2.putText(frame,f'{classes[answer]}',(100,100), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0,0,255),2)
 
                     ret, buffer = cv2.imencode('.jpg', frame)
                     frame_bytes = buffer.tobytes()
@@ -123,7 +131,7 @@ def sign_frame():
                     yield (b'--frame\r\n'
                            b'Content-Type: image/jpeg\r\n\r\n' + frame_bytes + b'\r\n')
                 except Exception as e:
-                    print(e)
+                    print(f'error : {e}')
                     pass
 
 @app.route('/video_feed')
