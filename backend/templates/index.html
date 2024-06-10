@@ -10,16 +10,16 @@
 </head>
 <body style="margin: 0; padding: 0;">
 
-    <div id ="guideBackground" style="width: 100vw; height: 100vh;position: fixed; z-index: 2; display: none; background-color: white; opacity: 40%;" onclick="
+    <div id ="guideBackground" style="width: 100vw; height: 100vh;position: fixed; z-index: 2; display: none; background-color: black; opacity: 40%;" onclick="
     let modal2 = document.getElementById('guide')
     let backgroundModal2 = document.getElementById('guideBackground')
     modal2.style.display='none'
     backgroundModal2.style.display = 'none'
     ">
     </div>
-    <div id="guide" style="border-radius: 10px; border: 1px solid gray; display: none; position: fixed; width: 80%; height: 80%; z-index: 99; background-color: white; left: 50%; top: 50%; transform: translate(-50%,-50%);">
+    <div id="guide">
         <div>
-            <h1 style="text-align: center;">Guide</h1>
+            <h1 id="guideText" style="text-align: center;">Guide</h1>
         </div>
         <img src="{{ url_for('static',filename='./asset/x.svg') }}" alt="X" style="width: 40px; height: auto; position: absolute; right: 0; top: 0;" onclick="
         let modal2 = document.getElementById('guide')
@@ -27,12 +27,12 @@
         modal2.style.display='none'
         backgroundModal2.style.display = 'none'
         ">
-        <div style="display: flex; align-items: center; justify-content: center; height: 80%; margin-top: 2%;">
-            <button id = "prevBtn">Prev</button>
+        <div id="modalContent">
+            <button id = "prevBtn">&lt;</button>
             <div id="guideContainer" style="display: flex; flex-wrap: wrap; justify-content: space-around; margin : 2%; row-gap: 2%; width: 60%; height: 100%;">
                 
             </div>
-            <button id="nextBtn">Next</button>
+            <button id="nextBtn">&gt;</button>
         </div>
 
     </div>
